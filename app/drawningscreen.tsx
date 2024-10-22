@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useState, useEffect, useRef } from "react";
-import { View, StyleSheet, Dimensions, Text } from "react-native";
+import { View, StyleSheet, Dimensions, Text, TouchableWithoutFeedback } from "react-native";
 import { Svg, Circle, Path, Text as SvgText } from "react-native-svg";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { defineCirclePositionsTesteA } from "@/components/drawning/TesteA";
@@ -43,9 +43,17 @@ export const DrawingScreen: React.FC = () => {
 	const [isDrawing, setIsDrawing] = useState(false);
 	const [startTime, setStartTime] = useState<Date | null>(null);
 	const [totalLengthDrawn, setTotalLengthDrawn] = useState(0); // New state for total length
+	const [currentSequence, setCurrentSequence] = useState<number[]>([]); // Track the user's current sequence
+	const [circleColors, setCircleColors] = useState<string[]>([]); // Track circle colors
 	const ppi = useRef<number | null>(null);
 	const router = useRouter();
 	const { trainingKey } = useLocalSearchParams();
+
+	// Initialize circle colors
+	useEffect(() => {
+		const initialColors = Array(circlePositionsMap[trainingKey]?.().length).fill("lightgrey");
+		setCircleColors(initialColors);
+	}, [trainingKey]);
 
 	// Set up the PPI once
 	useEffect(() => {
@@ -66,6 +74,11 @@ export const DrawingScreen: React.FC = () => {
 		const locationY = event.nativeEvent.locationY;
 		const newPoint = `M${locationX.toFixed(0)},${locationY.toFixed(0)} `;
 		setCurrentPath([newPoint]); // Start a new path
+
+		// Automatically select the first circle on start
+		if (currentSequence.length === 0) {
+			handleCircleSelect(0);
+		}
 	};
 
 	// End drawing
@@ -138,7 +151,41 @@ export const DrawingScreen: React.FC = () => {
 		}
 	}, [isDrawing, startTime]);
 
+	// Get circle positions for the current training
 	const circlePositions = circlePositionsMap[trainingKey]?.() || [];
+
+	// Function to handle circle selection
+
+	const handleCircleSelect = (index) => {
+		const expectedValue = currentSequence.length; // The expected next index
+
+		const newColors = [...circleColors]; // Copy current colors
+
+		// Check if the selection is correct
+		if (expectedValue === index) {
+			// Mark the correctly selected circle as light green
+			newColors[index] = "lightgreen";
+
+			// Also mark the previously selected circle if any
+			if (currentSequence.length > 0) {
+				newColors[currentSequence[currentSequence.length - 1]] = "lightgreen"; // Keep the last correct circle green
+			}
+
+			// Update the user's sequence
+			setCurrentSequence([...currentSequence, index]);
+		} else {
+			// Mark the incorrectly selected circle as red
+			newColors[index] = "red";
+
+			// Reset the last correct circle to its color
+			const lastCorrectIndex = currentSequence.length > 0 ? currentSequence[currentSequence.length - 1] : -1;
+			if (lastCorrectIndex !== -1) {
+				newColors[lastCorrectIndex] = "lightgreen"; // Ensure the last correct selection remains green
+			}
+		}
+
+		setCircleColors(newColors); // Update colors state
+	};
 
 	return (
 		<View style={styles.container}>
@@ -153,18 +200,20 @@ export const DrawingScreen: React.FC = () => {
 					{/* Render circles based on defined positions */}
 					{circlePositions.map((position, index) => (
 						<React.Fragment key={`circle-${index}`}>
-							<Circle
-								cx={position.left + 25}
-								cy={position.top + 25}
-								r={25}
-								stroke="blue"
-								fill="transparent"
-								strokeWidth={2}
-							/>
+							<TouchableWithoutFeedback onPress={() => handleCircleSelect(index)}>
+								<Circle
+									cx={position.left + 25}
+									cy={position.top + 25}
+									r={25}
+									stroke="blue"
+									fill={circleColors[index]} // Set circle color based on selection
+									strokeWidth={2}
+								/>
+							</TouchableWithoutFeedback>
 							<SvgText
 								x={position.left + 25}
 								y={position.top + 30}
-								fontSize={16}
+								fontSize={20}
 								fill="black"
 								textAnchor="middle"
 								alignmentBaseline="middle"
@@ -186,12 +235,12 @@ export const DrawingScreen: React.FC = () => {
 							strokeLinecap={"round"}
 						/>
 					))}
-					{/* Render the current path being drawn */}
+
+					{/* Render current path being drawn */}
 					{currentPath.length > 0 && (
 						<Path
-							key={`current-path`}
 							d={currentPath.join("")}
-							stroke={"red"}
+							stroke={"green"}
 							fill={"transparent"}
 							strokeWidth={2}
 							strokeLinejoin={"round"}
@@ -201,8 +250,8 @@ export const DrawingScreen: React.FC = () => {
 				</Svg>
 			</View>
 			<View style={styles.infoContainer}>
-				<Text style={styles.infoText}>Tempo total: {totalDrawingTime} ms</Text>
-				<Text style={styles.infoText}>Total em MM: {totalLengthDrawn.toFixed(2)} mm</Text>
+				<Text>Total Time: {(totalDrawingTime / 1000).toFixed(2)} seconds</Text>
+				<Text>Total Length Drawn: {totalLengthDrawn.toFixed(2)} mm</Text>
 			</View>
 		</View>
 	);
@@ -211,26 +260,14 @@ export const DrawingScreen: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+	},
+	svgContainer: {
+		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
 	},
-	svgContainer: {
-		width: "100%",
-		height: "100%",
-	},
 	infoContainer: {
-		position: "absolute",
-		bottom: 20,
-		backgroundColor: "rgba(0, 0, 255, 0.7)", // Different color for visibility
-		padding: 10,
-		borderRadius: 5,
-		flexDirection: "row", // Align items side by side
-		justifyContent: "space-between", // Space between the two texts
-		width: "90%", // Adjust width as needed
-	},
-	infoText: {
-		fontSize: 16,
-		color: "white", // Text color for visibility
+		padding: 16,
 	},
 });
 
