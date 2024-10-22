@@ -10,7 +10,6 @@ import { defineCirclePositionsTreinoA } from "@/components/drawning/TreinoA";
 import { defineCirclePositionsTreinoB } from "@/components/drawning/TreinoB";
 
 const { height, width } = Dimensions.get("window");
-const MM_PER_INCH = 25.4;
 const DISTANCE_THRESHOLD = 5; // Minimum distance between points in pixels
 
 const circlePositionsMap = {
@@ -43,6 +42,7 @@ export const DrawingScreen: React.FC = () => {
 	const [totalDrawingTime, setTotalDrawingTime] = useState(0);
 	const [isDrawing, setIsDrawing] = useState(false);
 	const [startTime, setStartTime] = useState<Date | null>(null);
+	const [totalLengthDrawn, setTotalLengthDrawn] = useState(0); // New state for total length
 	const ppi = useRef<number | null>(null);
 	const router = useRouter();
 	const { trainingKey } = useLocalSearchParams();
@@ -71,7 +71,11 @@ export const DrawingScreen: React.FC = () => {
 	// End drawing
 	const onTouchEnd = () => {
 		if (currentPath.length > 0) {
-			setPaths((prevPaths) => [...prevPaths, currentPath]); // Store completed path
+			setPaths((prevPaths) => {
+				const newPaths = [...prevPaths, currentPath]; // Store completed path
+				updateTotalLength(newPaths); // Update total length
+				return newPaths;
+			});
 			setCurrentPath([]); // Clear current path for next drawing
 		}
 		setIsDrawing(false);
@@ -100,6 +104,26 @@ export const DrawingScreen: React.FC = () => {
 		const distance = Math.sqrt((currX - prevX) ** 2 + (currY - prevY) ** 2);
 
 		return distance > DISTANCE_THRESHOLD;
+	};
+
+	// Calculate total length drawn in millimeters
+	const updateTotalLength = (newPaths: string[][]) => {
+		let totalLength = 0;
+
+		newPaths.forEach((path) => {
+			for (let i = 0; i < path.length - 1; i++) {
+				const [x1, y1] = path[i].slice(1).split(",").map(Number);
+				const [x2, y2] = path[i + 1].slice(1).split(",").map(Number);
+				const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+				totalLength += distance;
+			}
+		});
+
+		// Convert pixels to millimeters
+		if (ppi.current) {
+			const totalLengthInMM = (totalLength / ppi.current) * 25.4; // Convert to mm
+			setTotalLengthDrawn(totalLengthInMM);
+		}
 	};
 
 	// Update total drawing time
@@ -177,8 +201,8 @@ export const DrawingScreen: React.FC = () => {
 				</Svg>
 			</View>
 			<View style={styles.infoContainer}>
-				<Text style={styles.infoText}>Tempo total: {totalDrawingTime} milisegundos</Text>
-				<Text style={styles.infoText}>Total de caminhos: {paths.length}</Text>
+				<Text style={styles.infoText}>Tempo total: {totalDrawingTime} ms</Text>
+				<Text style={styles.infoText}>Total em MM: {totalLengthDrawn.toFixed(2)} mm</Text>
 			</View>
 		</View>
 	);
@@ -191,23 +215,22 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	svgContainer: {
-		height: height * 0.9,
-		width,
-		borderColor: "black",
-		backgroundColor: "white",
-		borderWidth: 1,
+		width: "100%",
+		height: "100%",
 	},
 	infoContainer: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		width: "100%",
-		paddingHorizontal: 20,
-		marginTop: 10,
+		position: "absolute",
+		bottom: 20,
+		backgroundColor: "rgba(0, 0, 255, 0.7)", // Different color for visibility
+		padding: 10,
+		borderRadius: 5,
+		flexDirection: "row", // Align items side by side
+		justifyContent: "space-between", // Space between the two texts
+		width: "90%", // Adjust width as needed
 	},
 	infoText: {
 		fontSize: 16,
-		fontWeight: "500",
+		color: "white", // Text color for visibility
 	},
 });
 
