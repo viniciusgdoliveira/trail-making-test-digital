@@ -14,7 +14,7 @@ const Index: React.FC = () => {
 			<View style={styles.buttonContainer}>
 				<Button
 					title="Treino A"
-					backgroundColor="red"
+					backgroundColor="#72F972"
 					trainingKey="TreinoA"
 				/>
 

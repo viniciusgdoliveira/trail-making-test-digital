@@ -14,7 +14,7 @@ const Button: React.FC<ButtonProps> = ({ title, backgroundColor, trainingKey }) 
 
 	const handlePress = () => {
 		router.push({
-			pathname: "/drawningscreen",
+			pathname: "/drawingscreen",
 			params: { trainingKey },
 		});
 	};
