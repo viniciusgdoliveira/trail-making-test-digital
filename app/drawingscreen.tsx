@@ -4,10 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Dimensions, Text, TouchableWithoutFeedback } from "react-native";
 import { Svg, Circle, Path, Text as SvgText } from "react-native-svg";
 import { useLocalSearchParams } from "expo-router";
-import { defineCirclePositionsTesteA } from "@/components/drawning/TesteA";
-import { defineCirclePositionsTesteB } from "@/components/drawning/TesteB";
-import { defineCirclePositionsTreinoA } from "@/components/drawning/TreinoA";
-import { defineCirclePositionsTreinoB } from "@/components/drawning/TreinoB";
+import { defineCirclePositionsTesteA } from "@/components/drawing/TesteA";
+import { defineCirclePositionsTesteB } from "@/components/drawing/TesteB";
+import { defineCirclePositionsTreinoA } from "@/components/drawing/TreinoA";
+import { defineCirclePositionsTreinoB } from "@/components/drawing/TreinoB";
 
 const { height, width } = Dimensions.get("window");
 const DISTANCE_THRESHOLD = 5; // Minimum distance between points in pixels
