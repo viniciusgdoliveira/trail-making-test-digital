@@ -19,7 +19,7 @@ const circlePositionsMap = {
 	TesteB: defineCirclePositionsTesteB,
 };
 
-const getCircleContent = (index: number, trainingKey: string) => {
+const getCircleContent = (index: number, trainingKey?: string) => {
 	if (trainingKey === "TreinoB" || trainingKey === "TesteB") {
 		const sequence = [];
 		let numCount = 1;
@@ -47,7 +47,7 @@ export const DrawingScreen: React.FC = () => {
 	const [circleColors, setCircleColors] = useState<string[]>([]); // Track circle colors
 	const ppi = useRef<number | null>(null);
 	const router = useRouter();
-	const { trainingKey } = useLocalSearchParams();
+	const { trainingKey } = useLocalSearchParams() as { trainingKey?: string };
 
 	// Initialize circle colors
 	useEffect(() => {
@@ -152,11 +152,11 @@ export const DrawingScreen: React.FC = () => {
 	}, [isDrawing, startTime]);
 
 	// Get circle positions for the current training
-	const circlePositions = circlePositionsMap[trainingKey]?.() || [];
+	const circlePositions = circlePositionsMap[trainingKey || "TreinoA"]?.() || [];
 
 	// Function to handle circle selection
 
-	const handleCircleSelect = (index) => {
+	const handleCircleSelect = (index: number) => {
 		const expectedValue = currentSequence.length; // The expected next index
 
 		const newColors = [...circleColors]; // Copy current colors
@@ -198,7 +198,7 @@ export const DrawingScreen: React.FC = () => {
 					onTouchEnd={onTouchEnd}
 				>
 					{/* Render circles based on defined positions */}
-					{circlePositions.map((position, index) => (
+					{circlePositions.map((position: any, index: number) => (
 						<React.Fragment key={`circle-${index}`}>
 							<TouchableWithoutFeedback onPress={() => handleCircleSelect(index)}>
 								<Circle
