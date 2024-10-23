@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Dimensions, Text, TouchableWithoutFeedback } from "react-native";
 import { Svg, Circle, Path, Text as SvgText } from "react-native-svg";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { defineCirclePositionsTesteA } from "@/components/drawning/TesteA";
 import { defineCirclePositionsTesteB } from "@/components/drawning/TesteB";
 import { defineCirclePositionsTreinoA } from "@/components/drawning/TreinoA";
