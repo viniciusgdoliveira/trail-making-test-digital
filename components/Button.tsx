@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 interface ButtonProps {
 	title: string;
 	backgroundColor: string;
-	trainingKey: string;
+	trainingKey?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({ title, backgroundColor, trainingKey }) => {
