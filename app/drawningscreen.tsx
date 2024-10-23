@@ -46,7 +46,6 @@ export const DrawingScreen: React.FC = () => {
 	const [currentSequence, setCurrentSequence] = useState<number[]>([]); // Track the user's current sequence
 	const [circleColors, setCircleColors] = useState<string[]>([]); // Track circle colors
 	const ppi = useRef<number | null>(null);
-	const router = useRouter();
 	const { trainingKey } = useLocalSearchParams() as { trainingKey?: string };
 
 	// Initialize circle colors

@@ -2,12 +2,9 @@
 
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import Button from "../components/Button";
 
 const Index: React.FC = () => {
-	const navigation = useNavigation();
-
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>

@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 interface ButtonProps {
 	title: string;
 	backgroundColor: string;
-	trainingKey: string; // Pass a key instead of the actual component
+	trainingKey: string;
 }
 
 const Button: React.FC<ButtonProps> = ({ title, backgroundColor, trainingKey }) => {
@@ -15,7 +15,7 @@ const Button: React.FC<ButtonProps> = ({ title, backgroundColor, trainingKey }) 
 	const handlePress = () => {
 		router.push({
 			pathname: "/drawningscreen",
-			params: { trainingKey }, // Pass the key to identify the training component
+			params: { trainingKey },
 		});
 	};
 
