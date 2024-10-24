@@ -48,7 +48,7 @@ export const DrawingScreen: React.FC = () => {
 	const ppi = useRef<number | null>(null);
 	const { trainingKey } = useLocalSearchParams() as { trainingKey?: string };
 	const [touchedCircles, setTouchedCircles] = useState<string[]>([]); // Store touched circle texts
-	const [isSelectingCircle, setIsSelectingCircle] = useState(false);
+
 	// Initialize circle colors
 	useEffect(() => {
 		const initialColors = Array(circlePositionsMap[trainingKey]?.().length).fill("lightgrey");
@@ -98,8 +98,6 @@ export const DrawingScreen: React.FC = () => {
 		return distance <= 25; // Circle radius
 	};
 
-	// Handle drawing movements
-	// Handle drawing movements
 	// Handle drawing movements
 	const onTouchMove = (event: any) => {
 		if (!isDrawing) return;
@@ -196,42 +194,6 @@ export const DrawingScreen: React.FC = () => {
 	// Get circle positions for the current training
 	const circlePositions = circlePositionsMap[trainingKey || "TreinoA"]?.() || [];
 
-	// Function to handle circle selection
-
-	const handleCircleSelect = (index: number) => {
-		const expectedValue = currentSequence.length; // The expected next index
-
-		const newColors = [...circleColors]; // Copy current colors
-
-		// Add the touched circle to the touchedCircles state
-		setTouchedCircles((prev) => [...prev, index]);
-
-		// Check if the selection is correct
-		if (expectedValue === index) {
-			// Correct selection: Mark it light green
-			newColors[index] = "lightgreen";
-
-			// Mark the previously selected circle if any
-			if (currentSequence.length > 0) {
-				newColors[currentSequence[currentSequence.length - 1]] = "lightgreen"; // Keep last correct circle green
-			}
-
-			// Update the user's sequence
-			setCurrentSequence([...currentSequence, index]);
-		} else {
-			// Wrong selection: Mark it red
-			newColors[index] = "red";
-
-			// Reset the last correct circle to its color
-			const lastCorrectIndex = currentSequence.length > 0 ? currentSequence[currentSequence.length - 1] : -1;
-			if (lastCorrectIndex !== -1) {
-				newColors[lastCorrectIndex] = "lightgreen"; // Ensure the last correct selection remains green
-			}
-		}
-
-		setCircleColors(newColors); // Update colors state
-	};
-
 	return (
 		<View style={styles.container}>
 			<View style={styles.svgContainer}>
@@ -253,8 +215,6 @@ export const DrawingScreen: React.FC = () => {
 									stroke="blue"
 									fill={circleColors[index]}
 									strokeWidth={2}
-									onPressIn={() => handleCircleSelect(index)} // Fires immediately when the user touches the circle
-									onPressOut={() => console.log("Released")} // Optional: Fires when the user lifts their finger
 								/>
 							</TouchableWithoutFeedback>
 							<SvgText
