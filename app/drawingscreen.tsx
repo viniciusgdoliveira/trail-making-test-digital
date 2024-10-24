@@ -100,6 +100,7 @@ export const DrawingScreen: React.FC = () => {
 
 	// Handle drawing movements
 	// Handle drawing movements
+	// Handle drawing movements
 	const onTouchMove = (event: any) => {
 		if (!isDrawing) return;
 
@@ -114,8 +115,33 @@ export const DrawingScreen: React.FC = () => {
 			circlePositions.forEach((_, index) => {
 				if (isPointNearCircle(locationX, locationY, index)) {
 					const circleText = getCircleContent(index, trainingKey); // Get text for the touched circle
+
+					// Check if the current sequence is correct
+					const expectedValue = currentSequence.length; // The expected next index
+					const newColors = [...circleColors];
+
+					if (expectedValue === index) {
+						// Correct selection: Mark it light green
+						newColors[index] = "lightgreen";
+
+						// Update the user's sequence
+						setCurrentSequence((prev) => [...prev, index]);
+					} else {
+						// Wrong selection: Mark it red
+						newColors[index] = "red";
+
+						// Reset the last correct circle to its color
+						const lastCorrectIndex = currentSequence.length > 0 ? currentSequence[currentSequence.length - 1] : -1;
+						if (lastCorrectIndex !== -1) {
+							newColors[lastCorrectIndex] = "lightgreen"; // Ensure the last correct selection remains green
+						}
+					}
+
+					// Update circle colors
+					setCircleColors(newColors);
+
+					// Add the touched circle text to touchedCircles if it's not already included
 					if (!touchedCircles.includes(circleText)) {
-						// Prevent duplicates
 						setTouchedCircles((prev) => [...prev, circleText]); // Add circle text to touchedCircles
 					}
 				}
