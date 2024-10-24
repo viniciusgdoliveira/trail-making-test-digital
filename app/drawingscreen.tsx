@@ -4,10 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Dimensions, Text, TouchableWithoutFeedback } from "react-native";
 import { Svg, Circle, Path, Text as SvgText } from "react-native-svg";
 import { useLocalSearchParams } from "expo-router";
-import { defineCirclePositionsTesteA } from "@/components/drawing/TesteA";
-import { defineCirclePositionsTesteB } from "@/components/drawing/TesteB";
-import { defineCirclePositionsTreinoA } from "@/components/drawing/TreinoA";
-import { defineCirclePositionsTreinoB } from "@/components/drawing/TreinoB";
+import { defineCirclePositionsTesteA } from "@/components/drawing/bases/TesteA";
+import { defineCirclePositionsTesteB } from "@/components/drawing/bases/TesteB";
+import { defineCirclePositionsTreinoA } from "@/components/drawing/bases/TreinoA";
+import { defineCirclePositionsTreinoB } from "@/components/drawing/bases/TreinoB";
 
 const { height, width } = Dimensions.get("window");
 const DISTANCE_THRESHOLD = 5; // Minimum distance between points in pixels
@@ -47,7 +47,8 @@ export const DrawingScreen: React.FC = () => {
 	const [circleColors, setCircleColors] = useState<string[]>([]); // Track circle colors
 	const ppi = useRef<number | null>(null);
 	const { trainingKey } = useLocalSearchParams() as { trainingKey?: string };
-
+	const [touchedCircles, setTouchedCircles] = useState<number[]>([]);
+	const [isSelectingCircle, setIsSelectingCircle] = useState(false);
 	// Initialize circle colors
 	useEffect(() => {
 		const initialColors = Array(circlePositionsMap[trainingKey]?.().length).fill("lightgrey");
@@ -73,11 +74,6 @@ export const DrawingScreen: React.FC = () => {
 		const locationY = event.nativeEvent.locationY;
 		const newPoint = `M${locationX.toFixed(0)},${locationY.toFixed(0)} `;
 		setCurrentPath([newPoint]); // Start a new path
-
-		// Automatically select the first circle on start
-		if (currentSequence.length === 0) {
-			handleCircleSelect(0);
-		}
 	};
 
 	// End drawing
@@ -93,6 +89,15 @@ export const DrawingScreen: React.FC = () => {
 		setIsDrawing(false);
 	};
 
+	// Function to check if a point is near a circle
+	const isPointNearCircle = (pointX: number, pointY: number, circleIndex: number) => {
+		const { left, top } = circlePositions[circleIndex];
+		const centerX = left + 25; // Circle center X
+		const centerY = top + 25; // Circle center Y
+		const distance = Math.sqrt((pointX - centerX) ** 2 + (pointY - centerY) ** 2);
+		return distance <= 25; // Circle radius
+	};
+
 	// Handle drawing movements
 	const onTouchMove = (event: any) => {
 		if (!isDrawing) return;
@@ -103,6 +108,13 @@ export const DrawingScreen: React.FC = () => {
 
 		if (shouldAddPoint(currentPath, newPoint)) {
 			setCurrentPath((prevPath) => [...prevPath, newPoint]);
+
+			// Check for touched circles
+			circlePositions.forEach((_, index) => {
+				if (isPointNearCircle(locationX, locationY, index) && !touchedCircles.includes(index)) {
+					setTouchedCircles((prev) => [...prev, index]); // Add circle index to touchedCircles
+				}
+			});
 		}
 	};
 
@@ -160,20 +172,23 @@ export const DrawingScreen: React.FC = () => {
 
 		const newColors = [...circleColors]; // Copy current colors
 
+		// Add the touched circle to the touchedCircles state
+		setTouchedCircles((prev) => [...prev, index]);
+
 		// Check if the selection is correct
 		if (expectedValue === index) {
-			// Mark the correctly selected circle as light green
+			// Correct selection: Mark it light green
 			newColors[index] = "lightgreen";
 
-			// Also mark the previously selected circle if any
+			// Mark the previously selected circle if any
 			if (currentSequence.length > 0) {
-				newColors[currentSequence[currentSequence.length - 1]] = "lightgreen"; // Keep the last correct circle green
+				newColors[currentSequence[currentSequence.length - 1]] = "lightgreen"; // Keep last correct circle green
 			}
 
 			// Update the user's sequence
 			setCurrentSequence([...currentSequence, index]);
 		} else {
-			// Mark the incorrectly selected circle as red
+			// Wrong selection: Mark it red
 			newColors[index] = "red";
 
 			// Reset the last correct circle to its color
@@ -199,14 +214,16 @@ export const DrawingScreen: React.FC = () => {
 					{/* Render circles based on defined positions */}
 					{circlePositions.map((position: any, index: number) => (
 						<React.Fragment key={`circle-${index}`}>
-							<TouchableWithoutFeedback onPress={() => handleCircleSelect(index)}>
+							<TouchableWithoutFeedback>
 								<Circle
 									cx={position.left + 25}
 									cy={position.top + 25}
 									r={25}
 									stroke="blue"
-									fill={circleColors[index]} // Set circle color based on selection
+									fill={circleColors[index]}
 									strokeWidth={2}
+									onPressIn={() => handleCircleSelect(index)} // Fires immediately when the user touches the circle
+									onPressOut={() => console.log("Released")} // Optional: Fires when the user lifts their finger
 								/>
 							</TouchableWithoutFeedback>
 							<SvgText
@@ -251,6 +268,7 @@ export const DrawingScreen: React.FC = () => {
 			<View style={styles.infoContainer}>
 				<Text>Total Time: {(totalDrawingTime / 1000).toFixed(2)} seconds</Text>
 				<Text>Total Length Drawn: {totalLengthDrawn.toFixed(2)} mm</Text>
+				<Text>Touched Circles: {touchedCircles.join(", ")}</Text>
 			</View>
 		</View>
 	);
