@@ -47,7 +47,7 @@ export const DrawingScreen: React.FC = () => {
 	const [circleColors, setCircleColors] = useState<string[]>([]); // Track circle colors
 	const ppi = useRef<number | null>(null);
 	const { trainingKey } = useLocalSearchParams() as { trainingKey?: string };
-	const [touchedCircles, setTouchedCircles] = useState<number[]>([]);
+	const [touchedCircles, setTouchedCircles] = useState<string[]>([]); // Store touched circle texts
 	const [isSelectingCircle, setIsSelectingCircle] = useState(false);
 	// Initialize circle colors
 	useEffect(() => {
@@ -99,6 +99,7 @@ export const DrawingScreen: React.FC = () => {
 	};
 
 	// Handle drawing movements
+	// Handle drawing movements
 	const onTouchMove = (event: any) => {
 		if (!isDrawing) return;
 
@@ -111,8 +112,12 @@ export const DrawingScreen: React.FC = () => {
 
 			// Check for touched circles
 			circlePositions.forEach((_, index) => {
-				if (isPointNearCircle(locationX, locationY, index) && !touchedCircles.includes(index)) {
-					setTouchedCircles((prev) => [...prev, index]); // Add circle index to touchedCircles
+				if (isPointNearCircle(locationX, locationY, index)) {
+					const circleText = getCircleContent(index, trainingKey); // Get text for the touched circle
+					if (!touchedCircles.includes(circleText)) {
+						// Prevent duplicates
+						setTouchedCircles((prev) => [...prev, circleText]); // Add circle text to touchedCircles
+					}
 				}
 			});
 		}
