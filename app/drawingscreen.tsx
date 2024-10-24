@@ -257,9 +257,9 @@ export const DrawingScreen: React.FC = () => {
 				</Svg>
 			</View>
 			<View style={styles.infoContainer}>
-				<Text>Total Time: {(totalDrawingTime / 1000).toFixed(2)} seconds</Text>
-				<Text>Total Length Drawn: {totalLengthDrawn.toFixed(2)} mm</Text>
-				<Text>Touched Circles: {touchedCircles.join(", ")}</Text>
+				<Text>Tempo Total: {(totalDrawingTime / 1000).toFixed(2)} seconds</Text>
+				<Text>Distancia total em mm: {totalLengthDrawn.toFixed(2)} mm</Text>
+				<Text>Sequencia de Circulos: {touchedCircles.join(", ")}</Text>
 			</View>
 		</View>
 	);
