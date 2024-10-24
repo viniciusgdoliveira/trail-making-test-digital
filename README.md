@@ -1,50 +1,51 @@
-# Welcome to your Expo app 👋
+<!-- @format -->
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Trail Making Test App
 
-## Get started
+Overview
 
-1. Install dependencies
+This project aims to develop a digital version of the Trail Making Test using Expo and React Native. The Trail Making Test is a neuropsychological test of visual attention and task switching. It consists of two parts: Part A requires the subject to connect a series of 25 encircled numbers distributed on a sheet of paper, while Part B requires connecting encircled numbers and letters in an alternating sequence.
 
-   ```bash
-   npm install
-   ```
+The digital version of this test is intended to be used on an iPad or tablet and will be utilized by a Ph.D. candidate for their thesis defense, provided pro bono by UpperMinds.
 
-2. Start the app
+Features
 
-   ```bash
-    npx expo start
-   ```
+Digital adaptation of the classic Trail Making Test.
+Part A and Part B implementations.
+Intuitive interface for easy interaction.
+Compatibility with iPad and tablets.
+Developed using Expo and React Native for cross-platform functionality.
 
-In the output, you'll find options to open the app in a
+## Installation
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Clone:
 
 ```bash
-npm run reset-project
+git clone https://github.com/viniciusgdoliveira/trail-making-test-digital.git
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Go to folder:
 
-## Learn more
+```bash
+cd trail-making-test-digital
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Install dependencies:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm install
+```
 
-## Join the community
+Run:
 
-Join our community of developers creating universal apps.
+```bash
+npx expo start
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Usage
+
+Follow the on-screen instructions to complete Part A and Part B of the Trail Making Test.
+Record the time taken to complete each part for analysis.
+Contributors
+
+UpperMinds - Project sponsor and contributor.
