@@ -1,51 +1,61 @@
 <!-- @format -->
+# Trail Making Test App
 
-Trail Making Test App
+## Overview
+This project is a **digital adaptation of the Trail Making Test (TMT)**, developed using **Expo** and **React Native**.  
 
-Overview
+The Trail Making Test is a neuropsychological test that evaluates **visual attention** and **task switching**:  
+- **Part A**: Connect a series of 25 encircled numbers in sequence.  
+- **Part B**: Connect encircled numbers and letters in an alternating sequence (1 → A → 2 → B → 3 → C …).  
 
-This project aims to develop a digital version of the Trail Making Test using Expo and React Native. The Trail Making Test is a neuropsychological test of visual attention and task switching. It consists of two parts: Part A requires the subject to connect a series of 25 encircled numbers distributed on a sheet of paper, while Part B requires connecting encircled numbers and letters in an alternating sequence.
+This digital version is optimized for **iPad and tablets** and was developed to support a **Ph.D. candidate’s thesis defense**.
 
-The digital version of this test is intended to be used on an iPad or tablet and will be utilized by a Ph.D. candidate for their thesis defense, provided pro bono by UpperMinds.
+---
 
-Features
+## Features
+- 🧩 Digital adaptation of the classic Trail Making Test  
+- 🔢 Part A and Part B fully implemented  
+- 🎨 Intuitive and touch-friendly interface  
+- 📱 Optimized for iPad and tablets  
+- ⚛️ Built with **Expo** + **React Native** for cross-platform compatibility  
 
-Digital adaptation of the classic Trail Making Test.
-Part A and Part B implementations.
-Intuitive interface for easy interaction.
-Compatibility with iPad and tablets.
-Developed using Expo and React Native for cross-platform functionality.
+---
 
 ## Installation
 
-Clone:
-
+Clone the repository:
 ```bash
 git clone https://github.com/viniciusgdoliveira/trail-making-test-digital.git
 ```
+Navigate to the project folder:
 
-Go to folder:
-
-```bash
 cd trail-making-test-digital
-```
+
 
 Install dependencies:
-
 ```bash
 npm install
 ```
 
-Run:
-
+Run the project:
 ```bash
+
 npx expo start
 ```
-
 Usage
 
-Follow the on-screen instructions to complete Part A and Part B of the Trail Making Test.
-Record the time taken to complete each part for analysis.
+Launch the app on your device or simulator.
+
+Follow the on-screen instructions to complete Part A and Part B.
+
+Record the completion time for performance analysis.
+
 Contributors
 
-UpperMinds - Project sponsor and contributor.
+👨‍💻 Vinícius Guimarães de Oliveira – Developer
+
+🎓 Ph.D. candidate – Research use case and validation
+
+License
+
+This project is provided pro bono for academic research. Please reach out for collaboration opportunities.
