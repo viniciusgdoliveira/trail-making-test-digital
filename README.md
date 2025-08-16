@@ -28,9 +28,10 @@ Clone the repository:
 git clone https://github.com/viniciusgdoliveira/trail-making-test-digital.git
 ```
 Navigate to the project folder:
+```bash
 
 cd trail-making-test-digital
-
+```
 
 Install dependencies:
 ```bash
